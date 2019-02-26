@@ -7,12 +7,16 @@ using System.IO;
 
 public class makeFolder : MonoBehaviour {
 
-
+    void Awake() {
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("DontDestroy");
+        if (objs.Length > 1) { Destroy(this.gameObject); }
+        else { DontDestroyOnLoad(this.gameObject); }
+    }
 
      void Start()
     {
         makeDir();
-        DontDestroyOnLoad(this.gameObject);
+        
     }
 
 
