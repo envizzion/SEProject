@@ -152,6 +152,33 @@ public class FireBaseController : MonoBehaviour
 
     }
 
+
+    public Task SaveUserDetailsAsync(float height, float weight, float age)
+    {
+
+        DatabaseReference reference = FirebaseDatabase.DefaultInstance.RootReference;
+
+        
+
+
+        string json = JsonUtility.ToJson(new Session(height, weight, age));
+
+        string[] userName = auth.CurrentUser.Email.Split('.');
+
+        return reference.Child(userName[0]).SetRawJsonValueAsync(json)
+        .ContinueWith((task) => {
+
+            LogTaskCompletion(task, "Save Details");
+
+
+            return task;
+        }).Unwrap();
+
+
+    }
+
+
+
     protected void InitializeFirebase()
     {
         DebugLog("Setting up Firebase Auth");
@@ -416,7 +443,23 @@ public class Session
     }
 
 }
-    public class User
+
+public class UserDetail
+{
+    public float Height;
+    public float Weight;
+    public float Age;
+
+
+    public UserDetail(float height, float weight, float age)
+    {
+        Height = height;
+        Weight = weight;
+        Age = age;
+    }
+
+}
+public class User
     {
         public string username;
         public string email;
