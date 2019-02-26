@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "162230457052",
+    "firebase_url": "https://vrcycling-6cab8.firebaseio.com",
+    "project_id": "vrcycling-6cab8",
+    "storage_bucket": "vrcycling-6cab8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162230457052:android:0a0669e717f5459a",
+        "android_client_info": {
+          "package_name": "com.envi.firebase2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "162230457052-miao2j4kdvgilo6l2hoi2f4qakeod6bq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiEOYKYEPZB-CzWlhndjsH1SOdFwGIfXo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

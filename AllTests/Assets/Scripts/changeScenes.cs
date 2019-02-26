@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class changeScenes : MonoBehaviour {
+public class changeScenes : MonoBehaviour
+{
 
-	public void goToVR() {
+    public void goToVR()
+    {
         SceneManager.LoadScene("VR");
 
     }
@@ -13,6 +15,18 @@ public class changeScenes : MonoBehaviour {
     public void goToMenu()
     {
         SceneManager.LoadScene("SampleScene");
+
+    }
+
+    public void goToLogin()
+    {
+        SceneManager.LoadScene("Login");
+
+    }
+
+    public void goToAnalytics()
+    {
+        SceneManager.LoadScene("Analytics");
 
     }
 }
