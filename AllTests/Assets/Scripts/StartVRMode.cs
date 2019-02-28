@@ -9,8 +9,13 @@ public class StartVRMode : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        StartCoroutine(ActivatorVR("Cardboard"));
+        
 
+    }
+
+    private void Awake()
+    {
+        StartCoroutine(ActivatorVR("Cardboard"));
     }
 
 

@@ -1806,7 +1806,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -252, y: 60}
+  m_AnchoredPosition: {x: 326, y: 46}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1259478110
@@ -1815,13 +1815,11 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1259478108}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a3a68c62866505047b20558217c16cb6, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cb17cabf4205174cb426e1f2390e992, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  txt: {fileID: 0}
-  source: {fileID: 316060286}
 --- !u!114 &1259478111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1862,7 +1860,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1259478110}
-        m_MethodName: loadFileBrowser
+        m_MethodName: goToUserDetails
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2075,7 +2073,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: User Details
 --- !u!222 &1303440248
 CanvasRenderer:
   m_ObjectHideFlags: 0

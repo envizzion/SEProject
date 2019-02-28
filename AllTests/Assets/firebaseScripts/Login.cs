@@ -19,7 +19,7 @@ public class Login : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-              
+        Debug.Log("login started");     
         register.onClick.AddListener(registerListner);
         signin.onClick.AddListener(signinListner);
         exit.onClick.AddListener(exitListner);
@@ -47,6 +47,7 @@ public class Login : MonoBehaviour {
 
         if (!password.text.Equals(confirmPassword.text)) {
             SSTools.ShowMessage("Passwords Doesn't Match", SSTools.Position.bottom, SSTools.Time.twoSecond);
+            return;
         }
 
         fire = GameObject.FindGameObjectWithTag("FireBaseObject").GetComponent<FireBaseController>();
@@ -81,14 +82,18 @@ public class Login : MonoBehaviour {
 
         string tx = txt.text = fire.logText;
         SSTools.ShowMessage(tx, SSTools.Position.bottom, SSTools.Time.twoSecond);
-
+        yield return new WaitForSeconds(3);
         if (tx == ("User Creation Completed"))
         {
 
             SaveLoadManager.saveData(email.text, password.text);
-            new changeScenes().goToMenu();
+            new changeScenes().goToUserDetails();
         }
+
     }
+
+
+         
 
 
         IEnumerator waitForSignin(Task tsk) {
@@ -105,11 +110,31 @@ public class Login : MonoBehaviour {
             {
 
                 SaveLoadManager.saveData(email.text, password.text);
-                new changeScenes().goToMenu();
-            }
+          //  fire.StartDataChangeListener();
+               new changeScenes().goToMenu();
+
+
 
         }
 
+        }
+
+    IEnumerator waitForLoadDetails(Task tsk)
+    {
+
+        fire.logText = "";
+        while (!tsk.IsCompleted) yield return null;
+
+
+
+        //string tx = txt.text = fire.logText;
+       // SSTools.ShowMessage(tx, SSTools.Position.bottom, SSTools.Time.twoSecond);
+        
+           
+            new changeScenes().goToMenu();
+        
+
+    }
 
 
 }

@@ -8,6 +8,7 @@ TagManager:
   - AudPlayer
   - DontDestroy
   - FireBaseObject
+  - myCanvas
   layers:
   - Default
   - TransparentFX

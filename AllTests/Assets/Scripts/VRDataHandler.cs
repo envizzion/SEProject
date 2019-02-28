@@ -22,7 +22,7 @@ public class VRDataHandler : MonoBehaviour {
     public Text timeTxt;
 
     protected FireBaseController fire;
-
+    protected pluginWrapper wrapper;
     // Use this for initialization
     void Start()
     {
@@ -31,6 +31,8 @@ public class VRDataHandler : MonoBehaviour {
 
     }
     public void startSession() {
+
+        wrapper = GameObject.FindGameObjectWithTag("myCanvas").GetComponent<pluginWrapper>();
 
 
         StartCoroutine(dataGrabRoutine());
@@ -97,9 +99,12 @@ public class VRDataHandler : MonoBehaviour {
         float cal;
         while(true) {
             counter++;
+            
+                string[]  str=wrapper.sendData();
+                currSpeed = int.Parse(str[1]);
 
-            //set distance >> currspeed in ms-1
-            distanceKM += currSpeed/1000;
+        //set distance >> currspeed in ms-1
+        distanceKM += currSpeed/1000;
 
 
             //set calories variable

@@ -17,14 +17,15 @@ public class UserDetailHandler : MonoBehaviour {
     void Start () {
         saveButton.onClick.AddListener(saveEvent);
         exitButton.onClick.AddListener(exitEvent);
-        
 
+        fire = GameObject.FindGameObjectWithTag("FireBaseObject").GetComponent<FireBaseController>();
 
+        StartCoroutine(waitForLoadingData());
 
     }
 
 
-   
+
 
     private bool isValidated(string[] arr)
     {
@@ -50,7 +51,6 @@ public class UserDetailHandler : MonoBehaviour {
 
         if (!isValidated(arr)) return;
 
-        fire = GameObject.FindGameObjectWithTag("FireBaseObject").GetComponent<FireBaseController>();
 
         Task tsk = fire.SaveUserDetailsAsync(float.Parse(arr[0]), float.Parse(arr[1]), float.Parse(arr[2]));
         StartCoroutine(waitForDetailSaving(tsk));
@@ -61,11 +61,10 @@ public class UserDetailHandler : MonoBehaviour {
     }
 
 
-    void updateFields() {
 
 
-    }
 
+   
 
     IEnumerator waitAndExit(bool isOK) {
         yield return new WaitForSeconds(3);
@@ -94,6 +93,45 @@ public class UserDetailHandler : MonoBehaviour {
 
     }
 
-    // Update is called once per frame
+    IEnumerator waitForUpdatingUserDetails(Task tsk)
+    {
+
+
+        SSTools.ShowMessage("Updating Details", SSTools.Position.bottom, SSTools.Time.twoSecond);
+        fire.logText = "";
+        while (!tsk.IsCompleted) yield return null;
+
+     
+
+
+        if (fire.logText == ("Get Details Completed")) {
+            UserDetail det = fire.getUserDetails();
+            height.text = det.Height.ToString();
+            Weight.text = det.Weight.ToString();
+            age.text = det.Age.ToString();
+
+            
+
+
+        }
+
+        else SSTools.ShowMessage(fire.logText, SSTools.Position.bottom, SSTools.Time.twoSecond);
+
+
+    }
+
+    IEnumerator waitForLoadingData() {
+
+        while (!fire.detailsIsLoaded()) {
+            SSTools.ShowMessage("Loading Details", SSTools.Position.bottom, SSTools.Time.twoSecond);
+            yield return new WaitForSeconds(2);
+
+        }
+        UserDetail det = fire.getUserDetails();
+        height.text = det.Height.ToString();
+        Weight.text = det.Weight.ToString();
+        age.text = det.Age.ToString();
+
+    }
 
 }

@@ -7,7 +7,7 @@ public class MediaNavigator : MonoBehaviour {
     // Use this for initialization
     VideoController Vplayer;
     AudioController Aplayer;
-   
+    VRDataHandler dataHandler;
 	void Start () {
 
         try
@@ -16,8 +16,11 @@ public class MediaNavigator : MonoBehaviour {
             
             Vplayer = GameObject.FindGameObjectWithTag("VidPlayer").GetComponent<VideoController>();
             Aplayer = GameObject.FindGameObjectWithTag("AudPlayer").GetComponent<AudioController>();
+            dataHandler = GameObject.FindGameObjectWithTag("myCanvas").GetComponent<VRDataHandler>();
 
-
+            
+            
+            
         }
         catch (System.Exception e) {
             Debug.Log(e.Message);
@@ -51,6 +54,7 @@ public class MediaNavigator : MonoBehaviour {
         //Vplayer.startVideo();
         Vplayer.startVideo();
         Aplayer.playNext();
+        dataHandler.startSession();
     }
 
 

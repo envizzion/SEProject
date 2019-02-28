@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using Firebase.Auth;
 using Firebase.Database;
 
+
 public class FireBaseController : MonoBehaviour
 {
 
@@ -26,15 +27,16 @@ public class FireBaseController : MonoBehaviour
 
     private uint phoneAuthTimeoutMs = 60 * 1000;
     private string phoneAuthVerificationId;
+    
 
-
-    public string logText = "jj";
+    public string logText = "";
     protected string email = "";
     protected string password = "";
     protected string displayName = "";
     protected string phoneNumber = "";
     protected string receivedCode = "";
-
+    protected bool detailsSet=false;
+    protected UserDetail userDetail; 
     private Firebase.AppOptions otherAuthOptions = new Firebase.AppOptions
     {
         ApiKey = "",
@@ -53,6 +55,25 @@ public class FireBaseController : MonoBehaviour
         GameObject[] objs = GameObject.FindGameObjectsWithTag("FireBaseObject");
         if (objs.Length > 1) { Destroy(this.gameObject); }
         else { DontDestroyOnLoad(this.gameObject); }
+
+
+
+        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+            dependencyStatus = task.Result;
+            if (dependencyStatus == Firebase.DependencyStatus.Available)
+            {
+                Debug.Log("dependencies ok");
+                InitializeFirebase();
+                InitializeDatabase();
+               
+            }
+            else
+            {
+                Debug.LogError(
+                  "Could not resolve all Firebase dependencies: " + dependencyStatus);
+            }
+        });
+
     }
 
 
@@ -63,24 +84,11 @@ public class FireBaseController : MonoBehaviour
 
 
 
-      void Start()
+    void Start()
       {
 
 
-          Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
-              dependencyStatus = task.Result;
-              if (dependencyStatus == Firebase.DependencyStatus.Available)
-              {
-                  InitializeFirebase();
-                  InitializeDatabase();
-              }
-              else
-              {
-                  Debug.LogError(
-                    "Could not resolve all Firebase dependencies: " + dependencyStatus);
-              }
-          });
-
+        userDetail = new UserDetail(0,0,0);
           
       }
 
@@ -89,17 +97,17 @@ public class FireBaseController : MonoBehaviour
 
     public void InitializeDatabase()
     {
-        
+        Debug.Log("Initializing database ");
         FirebaseApp app = FirebaseApp.DefaultInstance;
         app.SetEditorDatabaseUrl("https://vrcycling-6cab8.firebaseio.com/");
         if (app.Options.DatabaseUrl != null)
         {
 
             app.SetEditorDatabaseUrl(app.Options.DatabaseUrl);
-            Debug.Log("Initialized Success");
+            Debug.Log("Initialized database Success");
 
             //writeNewUser("hhhh", "chanon", "taforyou@hotmail.com");
-
+            StartDataChangeListener();
         }
 
     }
@@ -161,14 +169,17 @@ public class FireBaseController : MonoBehaviour
         
 
 
-        string json = JsonUtility.ToJson(new Session(height, weight, age));
+        string json = JsonUtility.ToJson(new UserDetail(height, weight, age));
 
         string[] userName = auth.CurrentUser.Email.Split('.');
 
-        return reference.Child(userName[0]).SetRawJsonValueAsync(json)
+        return reference.Child(userName[0]).Child("Details").SetRawJsonValueAsync(json)
         .ContinueWith((task) => {
 
             LogTaskCompletion(task, "Save Details");
+
+            if(logText.Equals("Save Details Completed"))
+            userDetail = new UserDetail(height, weight, age);
 
 
             return task;
@@ -177,7 +188,93 @@ public class FireBaseController : MonoBehaviour
 
     }
 
+    public void StartDataChangeListener()
+    {
 
+        string[] userName = auth.CurrentUser.Email.Split('.');
+        Debug.Log("Started listner");
+        FirebaseDatabase.DefaultInstance
+          .GetReference(userName[0]+"/Details")
+          .ValueChanged += HandleValueChanged; 
+    }
+
+    void HandleValueChanged(object sender2, ValueChangedEventArgs e2)  {
+        detailsSet = false;
+              if (e2.DatabaseError != null)
+              {
+                  Debug.LogError(e2.DatabaseError.Message);
+                  return;
+              }
+                      Debug.Log("Received values for Details");
+              
+
+              if (e2.Snapshot != null && e2.Snapshot.ChildrenCount > 0)
+              {
+
+           // Debug.Log("got data");
+            //      foreach (var childSnapshot in e2.Snapshot.Children)
+            //      {
+            //    Debug.Log("In loop");
+
+
+                var snap = e2.Snapshot;
+            //     Debug.Log("cal:" + childSnapshot.Child("Calories").Value.ToString());
+            //  Debug.Log("weig:" + childSnapshot.Child("Weight").Value.ToString());
+            //  Debug.Log("age:" + childSnapshot.Child("Age").Value.ToString());
+            userDetail.Height = float.Parse(snap.Child("Height").Value.ToString());
+            userDetail.Weight = float.Parse(snap.Child("Weight").Value.ToString());
+            userDetail.Age = float.Parse(snap.Child("Age").Value.ToString());
+            detailsSet = true;
+            //    }
+        }
+          }
+
+    public bool detailsIsLoaded() {
+        return detailsSet;
+    }
+
+    public Task loadUserDetailsAsync() {
+
+     string[] userName = auth.CurrentUser.Email.Split('.');
+
+
+      return  FirebaseDatabase.DefaultInstance
+      .GetReference(userName[0]+"/Details")
+      .GetValueAsync().ContinueWith(task => {
+
+
+          if (task.IsFaulted)
+          {
+              Debug.Log("user detail load failed");
+          }
+          else if (task.IsCompleted)
+          {
+              DataSnapshot snap = task.Result;
+              // Do something with snapshot...
+              userDetail.Height = float.Parse(snap.Child("Height").Value.ToString());
+              userDetail.Weight = float.Parse(snap.Child("Weight").Value.ToString());
+              userDetail.Age    = float.Parse(snap.Child("Age").Value.ToString());
+              Debug.Log("height:"+userDetail.Height);
+              Debug.Log("weight:" + userDetail.Height);
+              Debug.Log("age:" + userDetail.Height);
+          }
+          return task;
+      }).Unwrap();
+
+    }
+
+
+
+
+
+
+    public UserDetail  getUserDetails( )
+    {
+        return userDetail;
+
+    }
+
+  
 
     protected void InitializeFirebase()
     {
@@ -208,7 +305,7 @@ public class FireBaseController : MonoBehaviour
         AuthStateChanged(this, null);
 
 
-
+        Debug.Log("Setting up Firebase Auth complete");
 
 
 
@@ -378,14 +475,22 @@ public class FireBaseController : MonoBehaviour
     public Task SigninWithEmailCredentialAsync(string emai,string pass)
     {
         //DebugLog(String.Format("Attempting to sign in as {0}...", email));
-      
 
-            return auth.SignInWithCredentialAsync(
-              Firebase.Auth.EmailAuthProvider.GetCredential(emai, pass)).ContinueWith(task =>
-                LogTaskCompletion(task, "Sign in"));
- 
+
+        return auth.SignInWithCredentialAsync(
+          Firebase.Auth.EmailAuthProvider.GetCredential(emai, pass)).ContinueWith(task =>
+            LogTaskCompletion(task, "Sign in")
+
+               
+
+                
+                );
+
+  
+                
+                  
     }
-
+   
     public Task UpdateUserProfileAsync(string newDisplayName = null)
     {
         if (auth.CurrentUser == null)

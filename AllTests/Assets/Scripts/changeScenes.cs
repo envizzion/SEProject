@@ -29,4 +29,10 @@ public class changeScenes : MonoBehaviour
         SceneManager.LoadScene("Analytics");
 
     }
+
+    public void goToUserDetails() {
+
+        SceneManager.LoadScene("UserDetails");
+
+    }
 }
