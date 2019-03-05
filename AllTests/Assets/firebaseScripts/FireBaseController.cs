@@ -36,7 +36,10 @@ public class FireBaseController : MonoBehaviour
     protected string phoneNumber = "";
     protected string receivedCode = "";
     protected bool detailsSet=false;
-    protected UserDetail userDetail; 
+    protected bool dataSet = false;
+    protected UserDetail userDetail;
+    protected List<Sessions> sessions;
+
     private Firebase.AppOptions otherAuthOptions = new Firebase.AppOptions
     {
         ApiKey = "",
@@ -74,6 +77,7 @@ public class FireBaseController : MonoBehaviour
             }
         });
 
+        sessions = new List<Sessions>();
     }
 
 
@@ -274,7 +278,69 @@ public class FireBaseController : MonoBehaviour
 
     }
 
-  
+    public Task loadUserDataAsync()
+    {
+        dataSet = false;
+        sessions.Clear();
+        string[] userName = auth.CurrentUser.Email.Split('.');
+
+        Debug.Log("Loading data"); 
+        return FirebaseDatabase.DefaultInstance
+        .GetReference(userName[0] + "/Sessions")
+        .GetValueAsync().ContinueWith(task => {
+
+
+            if (task.IsFaulted)
+            {
+                Debug.Log("user detail load failed");
+            }
+            else if (task.IsCompleted)
+            {
+                DataSnapshot snap = task.Result;
+                if (snap != null && snap.ChildrenCount > 0)
+                {
+
+                    Debug.Log(snap.ChildrenCount);
+                    foreach (var ses in snap.Children)
+                    {
+
+                        Debug.Log(ses.Key);
+                        Sessions sess = new Sessions(
+                                             float.Parse(ses.Child("DistanceKM").Value.ToString()),
+                                             float.Parse(ses.Child("TimeMins").Value.ToString()),
+                                             float.Parse(ses.Child("Calories").Value.ToString()),
+                                             ses.Key
+
+                                            );
+                        sessions.Add(sess);
+                        Debug.Log("Got Data:"+sess.DistanceKM);
+                    }
+                }
+                dataSet = true;
+          }
+            return task;
+        }).Unwrap();
+
+    }
+
+
+
+
+
+
+    public List<Sessions> getUserData()
+    {
+
+
+        return sessions;
+
+    }
+
+    public bool dataIsLoaded()
+    {
+        return dataSet;
+    }
+
 
     protected void InitializeFirebase()
     {
@@ -545,6 +611,23 @@ public class Session
         DistanceKM = distanceKM;
         TimeMins = timeMins;
         Calories = calories;
+    }
+
+}
+
+public class Sessions
+{
+    public float DistanceKM;
+    public float TimeMins;
+    public float Calories;
+    public string key;
+
+    public Sessions(float distanceKM, float timeMins, float calories,string key)
+    {
+        DistanceKM = distanceKM;
+        TimeMins = timeMins;
+        Calories = calories;
+        this.key = key;
     }
 
 }

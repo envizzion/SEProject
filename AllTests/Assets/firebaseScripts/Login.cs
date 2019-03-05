@@ -62,6 +62,8 @@ public class Login : MonoBehaviour {
         Task tsk = fire.SigninWithEmailCredentialAsync(email.text, password.text); ;
         
         StartCoroutine(waitForSignin(tsk));
+
+        
     }
 
 

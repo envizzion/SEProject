@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 public class pluginWrapper : MonoBehaviour
 {
-
+    public Text speedTxt;
     public Text MsgText;
     //public Text DataText;
     AndroidJavaClass bluetoothComunication;
     AndroidJavaObject bluetoothCom;
     // public GameObject cub;
-    public string sol="";
+    private string sol="";
     string data = "", msg = "";
     string d;
     void Start()
@@ -66,9 +66,11 @@ public class pluginWrapper : MonoBehaviour
             msg = bluetoothCom.Call<string>("getMessage");               //Calling the ReadData  to receive data
             data = bluetoothCom.Call<string>("getData");
             MsgText.text = msg;
-          //  DataText.text = data;
-                
-        }
+            speedTxt.text=data;
+
+    //  DataText.text = data;
+
+}
         catch (AndroidJavaException ex)
         {
             data = ex.ToString();
@@ -77,7 +79,7 @@ public class pluginWrapper : MonoBehaviour
 
     public string[] sendData() {
         string[] arr = {msg ,data};
-
+        Debug.Log(data);
         return arr;
 
     }

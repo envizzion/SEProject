@@ -9,6 +9,7 @@ TagManager:
   - DontDestroy
   - FireBaseObject
   - myCanvas
+  - testCanvas
   layers:
   - Default
   - TransparentFX

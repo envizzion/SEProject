@@ -32,7 +32,7 @@ public class VRDataHandler : MonoBehaviour {
     }
     public void startSession() {
 
-        wrapper = GameObject.FindGameObjectWithTag("myCanvas").GetComponent<pluginWrapper>();
+        wrapper = GameObject.FindGameObjectWithTag("Canvas2").GetComponent<pluginWrapper>();
 
 
         StartCoroutine(dataGrabRoutine());
@@ -101,18 +101,22 @@ public class VRDataHandler : MonoBehaviour {
             counter++;
             
                 string[]  str=wrapper.sendData();
+            try
+            {
                 currSpeed = int.Parse(str[1]);
+                //set distance >> currspeed in ms-1
+                distanceKM += currSpeed / 1000;
 
-        //set distance >> currspeed in ms-1
-        distanceKM += currSpeed/1000;
 
+                //set calories variable
+                cal = ((float)((54.35026948 * (currSpeed * 2.237) + 4.949954089 * (weight * 2.20462) - 875)) / 3600);
 
-            //set calories variable
-             cal= ((float)(    (54.35026948 * (currSpeed * 2.237) + 4.949954089 * (weight * 2.20462) - 875)   ) / 3600 );
+                if (cal > 0) calories += cal;
 
-            if (cal > 0) calories += cal;
-
-            caloryTxt.text = Math.Round(calories,2).ToString();
+                caloryTxt.text = Math.Round(calories, 2).ToString();
+            }
+            catch (Exception e) { Debug.Log(e.Message); }
+          
 
             //set time variable
             seconds++;
@@ -129,7 +133,7 @@ public class VRDataHandler : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        speedTxt.text = currSpeed.ToString();
+        //speedTxt.text = currSpeed.ToString();
         distanceTxt.text = distanceKM.ToString();
         
         
