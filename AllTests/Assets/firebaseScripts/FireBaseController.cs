@@ -24,6 +24,7 @@ public class FireBaseController : MonoBehaviour
     private bool fetchingToken = false;
 
     public bool usePasswordInput = false;
+    public bool isRegistered = false;
 
     private uint phoneAuthTimeoutMs = 60 * 1000;
     private string phoneAuthVerificationId;

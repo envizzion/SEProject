@@ -20,8 +20,10 @@ public class UserDetailHandler : MonoBehaviour {
 
         fire = GameObject.FindGameObjectWithTag("FireBaseObject").GetComponent<FireBaseController>();
 
-        StartCoroutine(waitForLoadingData());
-
+        if (fire.isRegistered == true)
+        {
+            StartCoroutine(waitForLoadingData());
+        }
     }
 
 
@@ -88,6 +90,7 @@ public class UserDetailHandler : MonoBehaviour {
         {
 
             yield return new WaitForSeconds(3);
+            fire.isRegistered = true;
             new changeScenes().goToMenu();
         }
 

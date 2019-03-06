@@ -90,6 +90,7 @@ public class Login : MonoBehaviour {
 
             SaveLoadManager.saveData(email.text, password.text);
             new changeScenes().goToUserDetails();
+            fire.isRegistered = false;
         }
 
     }
@@ -114,7 +115,7 @@ public class Login : MonoBehaviour {
                 SaveLoadManager.saveData(email.text, password.text);
           //  fire.StartDataChangeListener();
                new changeScenes().goToMenu();
-
+            fire.isRegistered = true;
 
 
         }
